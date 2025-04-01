@@ -1,57 +1,59 @@
-import React, { useState } from 'react';
-import { Truck, Users, Ruler, Award, Navigation, TrendingUp } from 'lucide-react';
-import { motion } from 'framer-motion';
-
-const TopMoversComponent = () => {
-  const [movingCompanies] = useState([
-    { name: "Allied Van Lines", miles: 15680000, drivers: 2450, trucks: 1850, logo: "🚚", color: "#3b82f6" },
-    { name: "United Van Lines", miles: 14250000, drivers: 2180, trucks: 1720, logo: "🚛", color: "#10b981" },
-    { name: "Mayflower Transit", miles: 12870000, drivers: 1960, trucks: 1580, logo: "🏠", color: "#f59e0b" },
-  ]);
-
-  const companiesWithMetrics = movingCompanies.map(company => ({
-    ...company,
-    milesPerDriver: Math.round(company.miles / company.drivers),
-    milesPerTruck: Math.round(company.miles / company.trucks)
-  }));
-
-  const metrics = [
-    { name: "Total Miles", key: "miles", icon: <Ruler />, format: val => `${(val / 1e6).toFixed(1)}M` },
-    { name: "Total Drivers", key: "drivers", icon: <Users />, format: val => val.toLocaleString() },
-    { name: "Total Trucks", key: "trucks", icon: <Truck />, format: val => val.toLocaleString() },
-  ];
-
-  return (
-    <div className="bg-white p-6 rounded-xl shadow-lg max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 text-center mb-4">Top Moving Companies</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {metrics.map(metric => (
-          <motion.div key={metric.key} className="bg-gray-100 p-4 rounded-lg shadow flex flex-col items-center"
-            whileHover={{ scale: 1.05 }}>
-            <div className="text-blue-500 text-3xl mb-2">{metric.icon}</div>
-            <h2 className="text-lg font-semibold">{metric.name}</h2>
-            <div className="flex flex-col items-center mt-3">
-              {companiesWithMetrics.map((company, index) => (
-                <div key={company.name} className="flex items-center gap-2 mb-1">
-                  <span className="text-2xl">{company.logo}</span>
-                  <span className="font-medium">{company.name.split(' ')[0]}</span>
-                  <span className="text-sm text-gray-500">{metric.format(company[metric.key])}</span>
-                  {index === 0 && <Award className="h-5 w-5 text-yellow-500" />}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      <div className="mt-6 text-center">
-        <motion.button 
-          whileHover={{ scale: 1.1 }}
-          className="bg-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition">
-          Learn More
-        </motion.button>
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Moving Companies</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; text-align: center; }
+        .container { max-width: 900px; margin: 30px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1); }
+        .card { padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0px 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px; opacity: 0; }
+        .metric { font-size: 24px; font-weight: bold; }
+        .company { font-size: 16px; color: gray; }
+        .cta-btn { display: inline-block; padding: 10px 20px; background: #007BFF; color: white; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .cta-btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Top Moving Companies</h1>
+        <p>Based on FMCSA data analysis</p>
+        
+        <div class="card" id="miles">
+            <h2>Total Miles</h2>
+            <p class="metric">15.7M</p>
+            <p class="company">Allied Van Lines</p>
+        </div>
+        
+        <div class="card" id="drivers">
+            <h2>Total Drivers</h2>
+            <p class="metric">2,450</p>
+            <p class="company">Allied Van Lines</p>
+        </div>
+        
+        <div class="card" id="trucks">
+            <h2>Total Trucks</h2>
+            <p class="metric">1,850</p>
+            <p class="company">Allied Van Lines</p>
+        </div>
+        
+        <div class="cta-btn" onclick="showMoreInfo()">Learn More</div>
     </div>
-  );
-};
 
-export default TopMoversComponent;
+    <script>
+        gsap.from(".card", { 
+            opacity: 0, 
+            y: 50, 
+            duration: 1, 
+            stagger: 0.3, 
+            scrollTrigger: { trigger: ".container", start: "top 80%" }
+        });
+        
+        function showMoreInfo() {
+            alert("More details coming soon! Stay tuned.");
+        }
+    </script>
+</body>
+</html>
