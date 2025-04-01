@@ -9,10 +9,19 @@
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; text-align: center; }
         .container { max-width: 900px; margin: 30px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1); }
-        .card { padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0px 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px; opacity: 0; }
+        .card { 
+            padding: 20px; 
+            background: #fff; 
+            border-radius: 8px; 
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.1); 
+            margin-bottom: 20px; 
+            opacity: 0; /* Start invisible */
+            transform: translateY(50px); /* Move down initially */
+            transition: transform 0.5s ease, opacity 0.5s ease; 
+        }
         .metric { font-size: 24px; font-weight: bold; }
         .company { font-size: 16px; color: gray; }
-        .cta-btn { display: inline-block; padding: 10px 20px; background: #007BFF; color: white; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .cta-btn { display: inline-block; padding: 12px 25px; background: #007BFF; color: white; border-radius: 5px; cursor: pointer; transition: 0.3s; font-size: 18px; }
         .cta-btn:hover { background: #0056b3; }
     </style>
 </head>
@@ -30,30 +39,4 @@
         <div class="card" id="drivers">
             <h2>Total Drivers</h2>
             <p class="metric">2,450</p>
-            <p class="company">Allied Van Lines</p>
-        </div>
-        
-        <div class="card" id="trucks">
-            <h2>Total Trucks</h2>
-            <p class="metric">1,850</p>
-            <p class="company">Allied Van Lines</p>
-        </div>
-        
-        <div class="cta-btn" onclick="showMoreInfo()">Learn More</div>
-    </div>
-
-    <script>
-        gsap.from(".card", { 
-            opacity: 0, 
-            y: 50, 
-            duration: 1, 
-            stagger: 0.3, 
-            scrollTrigger: { trigger: ".container", start: "top 80%" }
-        });
-        
-        function showMoreInfo() {
-            alert("More details coming soon! Stay tuned.");
-        }
-    </script>
-</body>
-</html>
+            <p class="company">
