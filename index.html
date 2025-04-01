@@ -1,105 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Moving Companies</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .tooltip {
-            position: absolute;
-            background: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.2s;
-            pointer-events: none;
-        }
-        .info-icon:hover + .tooltip {
-            opacity: 1;
-        }
-    </style>
-</head>
-<body class="bg-gray-100">
+import React, { useState } from 'react';
+import { Truck, Users, Ruler, Award, Navigation, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-10">
-        <h1 class="text-2xl font-bold text-gray-800">Top Moving Companies</h1>
+const TopMoversComponent = () => {
+  const [movingCompanies] = useState([
+    { name: "Allied Van Lines", miles: 15680000, drivers: 2450, trucks: 1850, logo: "🚚", color: "#3b82f6" },
+    { name: "United Van Lines", miles: 14250000, drivers: 2180, trucks: 1720, logo: "🚛", color: "#10b981" },
+    { name: "Mayflower Transit", miles: 12870000, drivers: 1960, trucks: 1580, logo: "🏠", color: "#f59e0b" },
+  ]);
 
-        <div id="companies-list" class="space-y-4 mt-4">
-            <!-- Companies will be loaded here via JavaScript -->
-        </div>
+  const companiesWithMetrics = movingCompanies.map(company => ({
+    ...company,
+    milesPerDriver: Math.round(company.miles / company.drivers),
+    milesPerTruck: Math.round(company.miles / company.trucks)
+  }));
 
-        <h3 class="text-lg font-semibold text-gray-800 mt-6">Historical Data</h3>
-        <canvas id="chart" width="400" height="200"></canvas>
+  const metrics = [
+    { name: "Total Miles", key: "miles", icon: <Ruler />, format: val => `${(val / 1e6).toFixed(1)}M` },
+    { name: "Total Drivers", key: "drivers", icon: <Users />, format: val => val.toLocaleString() },
+    { name: "Total Trucks", key: "trucks", icon: <Truck />, format: val => val.toLocaleString() },
+  ];
+
+  return (
+    <div className="bg-white p-6 rounded-xl shadow-lg max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-800 text-center mb-4">Top Moving Companies</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {metrics.map(metric => (
+          <motion.div key={metric.key} className="bg-gray-100 p-4 rounded-lg shadow flex flex-col items-center"
+            whileHover={{ scale: 1.05 }}>
+            <div className="text-blue-500 text-3xl mb-2">{metric.icon}</div>
+            <h2 className="text-lg font-semibold">{metric.name}</h2>
+            <div className="flex flex-col items-center mt-3">
+              {companiesWithMetrics.map((company, index) => (
+                <div key={company.name} className="flex items-center gap-2 mb-1">
+                  <span className="text-2xl">{company.logo}</span>
+                  <span className="font-medium">{company.name.split(' ')[0]}</span>
+                  <span className="text-sm text-gray-500">{metric.format(company[metric.key])}</span>
+                  {index === 0 && <Award className="h-5 w-5 text-yellow-500" />}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+      <div className="mt-6 text-center">
+        <motion.button 
+          whileHover={{ scale: 1.1 }}
+          className="bg-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition">
+          Learn More
+        </motion.button>
+      </div>
     </div>
+  );
+};
 
-    <script>
-        // Sample data
-        const companies = [
-            { name: "Allied Van Lines", miles: 15680000, drivers: 2450, trucks: 1850, color: "#3b82f6" },
-            { name: "United Van Lines", miles: 14250000, drivers: 2180, trucks: 1720, color: "#10b981" },
-            { name: "Mayflower Transit", miles: 12870000, drivers: 1960, trucks: 1580, color: "#f59e0b" }
-        ];
-
-        function renderCompanies() {
-            const container = document.getElementById("companies-list");
-            container.innerHTML = "";
-
-            companies.forEach(company => {
-                const companyDiv = document.createElement("div");
-                companyDiv.classList = "bg-gray-50 p-4 rounded-md shadow flex justify-between items-center";
-
-                companyDiv.innerHTML = `
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-800">${company.name}</h2>
-                        <p class="text-sm text-gray-500">Miles Driven: ${company.miles.toLocaleString()}</p>
-                    </div>
-
-                    <div class="relative">
-                        <span class="info-icon cursor-pointer bg-gray-200 p-2 rounded-full">ⓘ</span>
-                        <div class="tooltip">Miles Driven: ${company.miles.toLocaleString()}</div>
-                    </div>
-                `;
-
-                container.appendChild(companyDiv);
-            });
-        }
-
-        renderCompanies();
-
-        // Chart (using Chart.js for easy implementation)
-        function renderChart() {
-            const ctx = document.getElementById("chart").getContext("2d");
-            new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: companies.map(c => c.name),
-                    datasets: [{
-                        label: "Miles Driven",
-                        data: companies.map(c => c.miles),
-                        backgroundColor: companies.map(c => c.color),
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        // Load Chart.js dynamically
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/npm/chart.js";
-        script.onload = renderChart;
-        document.body.appendChild(script);
-    </script>
-
-</body>
-</html>
+export default TopMoversComponent;
