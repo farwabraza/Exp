@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Moving Companies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tooltip {
+            position: absolute;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .info-icon:hover + .tooltip {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-10">
+        <h1 class="text-2xl font-bold text-gray-800">Top Moving Companies</h1>
+
+        <div id="companies-list" class="space-y-4 mt-4">
+            <!-- Companies will be loaded here via JavaScript -->
+        </div>
+
+        <h3 class="text-lg font-semibold text-gray-800 mt-6">Historical Data</h3>
+        <canvas id="chart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        // Sample data
+        const companies = [
+            { name: "Allied Van Lines", miles: 15680000, drivers: 2450, trucks: 1850, color: "#3b82f6" },
+            { name: "United Van Lines", miles: 14250000, drivers: 2180, trucks: 1720, color: "#10b981" },
+            { name: "Mayflower Transit", miles: 12870000, drivers: 1960, trucks: 1580, color: "#f59e0b" }
+        ];
+
+        function renderCompanies() {
+            const container = document.getElementById("companies-list");
+            container.innerHTML = "";
+
+            companies.forEach(company => {
+                const companyDiv = document.createElement("div");
+                companyDiv.classList = "bg-gray-50 p-4 rounded-md shadow flex justify-between items-center";
+
+                companyDiv.innerHTML = `
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-800">${company.name}</h2>
+                        <p class="text-sm text-gray-500">Miles Driven: ${company.miles.toLocaleString()}</p>
+                    </div>
+
+                    <div class="relative">
+                        <span class="info-icon cursor-pointer bg-gray-200 p-2 rounded-full">ⓘ</span>
+                        <div class="tooltip">Miles Driven: ${company.miles.toLocaleString()}</div>
+                    </div>
+                `;
+
+                container.appendChild(companyDiv);
+            });
+        }
+
+        renderCompanies();
+
+        // Chart (using Chart.js for easy implementation)
+        function renderChart() {
+            const ctx = document.getElementById("chart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: companies.map(c => c.name),
+                    datasets: [{
+                        label: "Miles Driven",
+                        data: companies.map(c => c.miles),
+                        backgroundColor: companies.map(c => c.color),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load Chart.js dynamically
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+        script.onload = renderChart;
+        document.body.appendChild(script);
+    </script>
+
+</body>
+</html>
