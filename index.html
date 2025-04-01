@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Moving Companies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/recharts/umd/Recharts.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } = Recharts;
+
+        const TopMoversComponent = () => {
+            const [year, setYear] = useState("2024");
+            const [region, setRegion] = useState("National");
+
+            const years = ["2022", "2023", "2024"];
+            const regions = ["National", "East Coast", "West Coast", "Midwest"];
+
+            const companies = [
+                { name: "Allied Van Lines", miles: 15680000, drivers: 2450, trucks: 1850, color: "#3b82f6" },
+                { name: "United Van Lines", miles: 14250000, drivers: 2180, trucks: 1720, color: "#10b981" },
+                { name: "Mayflower Transit", miles: 12870000, drivers: 1960, trucks: 1580, color: "#f59e0b" },
+            ];
+
+            const getHistoricalData = (company) => [
+                { year: "2022", miles: company.miles * 0.9 },
+                { year: "2023", miles: company.miles * 0.95 },
+                { year: "2024", miles: company.miles },
+            ];
+
+            return (
+                <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-10">
+                    <div className="flex justify-between items-center mb-4">
+                        <h1 className="text-2xl font-bold text-gray-800">Top Moving Companies ({year})</h1>
+
+                        {/* Year Filter */}
+                        <select onChange={(e) => setYear(e.target.value)} className="bg-gray-100 px-4 py-2 rounded-md">
+                            {years.map(y => <option key={y} value={y}>{y}</option>)}
+                        </select>
+                    </div>
+
+                    {/* Region Filter */}
+                    <div className="flex justify-end mb-4">
+                        <select onChange={(e) => setRegion(e.target.value)} className="bg-gray-100 px-4 py-2 rounded-md">
+                            {regions.map(r => <option key={r} value={r}>{r}</option>)}
+                        </select>
+                    </div>
+
+                    {/* Companies List */}
+                    <div className="space-y-4">
+                        {companies.map(company => (
+                            <div key={company.name} className="bg-gray-50 p-4 rounded-md shadow flex justify-between">
+                                <div>
+                                    <h2 className="text-lg font-semibold text-gray-800">{company.name}</h2>
+                                    <p className="text-sm text-gray-500">Miles Driven: {company.miles.toLocaleString()}</p>
+                                </div>
+
+                                {/* Tooltip */}
+                                <div className="relative group">
+                                    <div className="p-2 bg-gray-200 rounded-full cursor-pointer">
+                                        ⓘ
+                                    </div>
+                                    <div className="absolute bottom-10 left-0 bg-white p-2 shadow-md rounded-md text-sm text-gray-700 opacity-0 group-hover:opacity-100 transition">
+                                        {company.miles} miles in {year}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Historical Data Chart */}
+                    <div className="mt-6 bg-gray-50 p-4 rounded-md shadow">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">Historical Miles Driven</h3>
+                        <ResponsiveContainer width="100%" height={200}>
+                            <LineChart data={getHistoricalData(companies[0])}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="year" />
+                                <YAxis />
+                                <Tooltip />
+                                <Line type="monotone" dataKey="miles" stroke={companies[0].color} strokeWidth={2} />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+
+                    {/* Call to Action */}
+                    <div className="mt-6 text-center">
+                        <button className="bg-blue-600 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700 transition">
+                            Explore More Data
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<TopMoversComponent />);
+    </script>
+</body>
+</html>
